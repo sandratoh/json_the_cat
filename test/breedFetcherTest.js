@@ -15,4 +15,16 @@ describe('fetchBreedDescription', () => {
       done();
     });
   });
+
+  it('returns an error message for an invalid/non-existen breed, via callback', (done) => {
+    fetchBreedDescription('Meowster', (err, desc) => {
+      assert.equal(desc, null);
+
+      const expectedErr = 'Oh no! We can\'t find the breed you are looking. Check your spelling and try again! ฅ^•ﻌ•^ฅ';
+
+      assert.equal(expectedErr, err.trim());
+
+      done();
+    });
+  });
 });

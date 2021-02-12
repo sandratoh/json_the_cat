@@ -1,18 +1,24 @@
 const request = require('request');
 
-let args = process.argv.slice(2);
-let query = args.toString();
+const breedName = process.argv[2];
 
-request(`https://api.thecatapi.com/v1/breeds/search?q=${query}`, (error, response, body) => {
-  if (error || response.statusCode !== 200) {
-    console.log('Hmmm, there seems to be some problem with the webpage. Check the URL and try again! (=•ｪ•=?');
-  } else {
-    if (body === '[]') {
-      console.log('Oh no! We can\'t find the breed you are looking. Check your spelling and try again! ฅ^•ﻌ•^ฅ');
+const fetchBreedDescription = (breedName, callback) => {
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (err, response, body) => {
+    if (err || response.statusCode !== 200) {
+      let error = 'Hmmm, there seems to be some problem with the webpage. Check the URL and try again! (=•ｪ•=?';
+      return callback(error, null);
     } else {
-    // deserialization: parse string to object
-      const data = JSON.parse(body);
-      console.log(data[0].description, 'ฅ^◕ﻌ◕^ฅ ♥');
+      if (body === '[]') {
+        let error = 'Oh no! We can\'t find the breed you are looking. Check your spelling and try again! ฅ^•ﻌ•^ฅ';
+        return callback(error, null);
+      } else {
+        const data = JSON.parse(body);
+        let desc = data[0].description + 'ฅ^◕ﻌ◕^ฅ ♥';
+        return callback(null, desc);
+      }
     }
-  }
-});
+  })
+  ;
+};
+
+module.exports = {fetchBreedDescription};
